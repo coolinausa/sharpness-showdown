@@ -184,7 +184,7 @@
     <div class="rules">
       <span class="chip">🔪 <b>10</b> SUBMISSIONS</span>
       <span class="chip">🥩 PICK THE <b>SHARPEST</b></span>
-      <span class="chip">🔒 <b>TEAM VOTE</b></span>
+      <span class="chip">🔒 <b>100%</b> ANONYMOUS</span>
     </div>
     </div>
   </header>
@@ -197,7 +197,6 @@
   <div class="bar">
     <div class="bar-in">
       <div class="pickstate" id="pickstate"><span class="none">👆 Tap a video below to pick the winner</span></div>
-      <label class="handle-in"><span>@</span><input id="handle" type="text" placeholder="your instagram handle" autocomplete="off" /></label>
       <button class="submit" id="submit" disabled>Cast My Vote</button>
     </div>
   </div>
@@ -215,9 +214,8 @@
   <iframe name="gform_sink" style="display:none"></iframe>
 
 <script>
-  var FORM_ACTION   = "https://docs.google.com/forms/d/e/1FAIpQLSexQ6wA_WOoM561xewhg1U5m8EQCAnlWGvU-XcvNaaKimfrIg/formResponse";
-  var ENTRY_HANDLE  = "entry.1898318817";
-  var ENTRY_PICK    = "entry.770678648";
+  var FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSexQ6wA_WOoM561xewhg1U5m8EQCAnlWGvU-XcvNaaKimfrIg/formResponse";
+  var ENTRY_PICK  = "entry.770678648";
 
   var CONTENDERS = [
     {name:"Alex Singleton",     handle:"@showpow.bbq",            desc:"Sharpness submission",
@@ -299,16 +297,13 @@
   function refreshBar(){
     var ps = document.getElementById("pickstate");
     var submit = document.getElementById("submit");
-    var handle = document.getElementById("handle").value.trim();
     if(picked === null){
       ps.innerHTML = '<span class="none">👆 Tap a video below to pick the winner</span>';
     } else {
       ps.innerHTML = 'Your pick: <b>'+CONTENDERS[picked].name+'</b>';
     }
-    submit.disabled = (picked === null || handle.length === 0);
+    submit.disabled = (picked === null);
   }
-
-  document.getElementById("handle").addEventListener("input", refreshBar);
 
   grid.addEventListener("click", function(e){
     var btn = e.target.closest(".pickbtn");
@@ -328,14 +323,10 @@
 
   document.getElementById("submit").addEventListener("click", function(){
     if(picked === null) return;
-    var handle = document.getElementById("handle").value.trim();
-    if(!handle) return;
-    if(handle.charAt(0) !== "@") handle = "@" + handle;
 
     var f = document.createElement("form");
     f.action = FORM_ACTION; f.method = "POST"; f.target = "gform_sink";
     function add(name,val){var inp=document.createElement("input");inp.type="hidden";inp.name=name;inp.value=val;f.appendChild(inp);}
-    add(ENTRY_HANDLE, handle);
     add(ENTRY_PICK, CONTENDERS[picked].value);
     document.body.appendChild(f);
     f.submit();
